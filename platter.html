@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Sellers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Hide the scrollbar by default */
+        .scrollbar-hidden::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+        
+        /* Show scroll bar on hover or touch */
+        .scrollbar-hidden:hover::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .scrollbar-hidden::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 6px;
+        }
+        
+        .scrollbar-hidden::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-2xl font-bold mb-4 text-center">Best Sellers</h2>
+
+        <!-- Mobile container (2 rows of 2 columns) -->
+        <div id="mobileGrid" class="grid grid-cols-2 gap-4 md:hidden">
+
+        </div>
+
+        <!-- "Show more" button for mobile -->
+        <button id="showMoreBtn" class="mt-2 bg-black text-white px-6 py-2 rounded-full text-sm w-full mx-0 block md:hidden">
+            Show More
+        </button>
+
+        <!-- Desktop carousel container -->
+        <div class="relative hidden md:block">
+            <div id="productContainer" 
+                class="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth snap-x snap-mandatory">
+        
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const products = [
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 4.0, reviews: 210 },
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 4.5, reviews: 340 },
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 5.0, reviews: 180 },
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 3.5, reviews: 90 },
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 4.0, reviews: 130 },
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 4.8, reviews: 500 },
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 4.3, reviews: 250 },
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 5.0, reviews: 400 },
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 3.8, reviews: 70 },
+                { image1: "images/sun1.JPG", image2: "images/sun2.JPG", name: "Stylish Sunglasses", price: "$49.99", rating: 4.6, reviews: 320 }
+            ];
+
+            const mobileGrid = document.getElementById("mobileGrid");
+            const desktopContainer = document.getElementById("productContainer");
+            const showMoreBtn = document.getElementById("showMoreBtn");
+
+            function generateStars(rating) {
+                let fullStars = Math.floor(rating);
+                let halfStar = rating % 1 !== 0;
+                let starsHTML = "";
+
+                for (let i = 0; i < fullStars; i++) {
+                    starsHTML += "★";
+                }
+                if (halfStar) {
+                    starsHTML += "☆";
+                }
+                while (starsHTML.length < 5) {
+                    starsHTML += "☆";
+                }
+
+                return `<span class="text-yellow-500 font-bold">${starsHTML}</span> <span class="text-gray-500 text-xs">(${Math.floor(Math.random() * 500) + 50} reviews)</span>`;
+            }
+
+            // Insert the first 4 products in mobile grid
+            products.slice(0, 4).forEach((product) => {
+                const productCard = document.createElement("div");
+                productCard.className = "bg-white p-4 rounded-lg shadow-md w-full";
+                productCard.innerHTML = `
+                    <div class="relative w-full h-48 overflow-hidden rounded-lg">
+                        <img src="${product.image1}" class="w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-300 hover:opacity-0 rounded-lg"/>
+                        <img src="${product.image2}" class="w-full h-full object-cover absolute top-0 left-0 opacity-0 transition-opacity duration-300 hover:opacity-100 rounded-lg"/>
+                    </div>
+                    <h3 class="mt-2 font-semibold text-sm">${product.name}</h3>
+                    <p class="text-xs">${generateStars(product.rating)}</p>
+                    <p class="text-gray-600 text-xs">${product.price}</p>
+                `;
+                mobileGrid.appendChild(productCard);
+            });
+
+            // Insert all products into the desktop carousel
+            products.forEach((product) => {
+                const productCard = document.createElement("div");
+                productCard.className = "bg-white p-4 rounded-lg shadow-md transition duration-300 relative w-48 flex-none snap-start";
+                productCard.innerHTML = `
+                    <div class="relative w-full h-48 overflow-hidden rounded-lg">
+                        <img src="${product.image1}" class="w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-300 hover:opacity-0 rounded-lg"/>
+                        <img src="${product.image2}" class="w-full h-full object-cover absolute top-0 left-0 opacity-0 transition-opacity duration-300 hover:opacity-100 rounded-lg"/>
+                    </div>
+                    <h3 class="mt-2 font-semibold text-sm">${product.name}</h3>
+                    <p class="text-xs">${generateStars(product.rating)}</p>
+                    <p class="text-gray-600 text-xs">${product.price}</p>
+                `;
+                desktopContainer.appendChild(productCard);
+            });
+
+            // Show more products on mobile when button is clicked
+            showMoreBtn.addEventListener("click", function() {
+                products.slice(4).forEach((product) => {
+                    const productCard = document.createElement("div");
+                    productCard.className = "bg-white p-4 rounded-lg shadow-md w-full";
+                    productCard.innerHTML = `
+                        <div class="relative w-full h-48 overflow-hidden rounded-lg">
+                            <img src="${product.image1}" class="w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-300 hover:opacity-0 rounded-lg"/>
+                            <img src="${product.image2}" class="w-full h-full object-cover absolute top-0 left-0 opacity-0 transition-opacity duration-300 hover:opacity-100 rounded-lg"/>
+                        </div>
+                        <h3 class="mt-2 font-semibold text-sm">${product.name}</h3>
+                        <p class="text-xs">${generateStars(product.rating)}</p>
+                        <p class="text-gray-600 text-xs">${product.price}</p>
+                    `;
+                    mobileGrid.appendChild(productCard);
+                });
+                this.classList.add("hidden"); // Hide button after displaying products
+            });
+        });
+    </script>
+</body>
+</html>
